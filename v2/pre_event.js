@@ -301,7 +301,7 @@ function handleSubmitAndGenerateReport () {
   //   SubmitSchoolDetail()
 
   // Wait for form submission to complete, then generate the PDF
-  setTimeout(() => {
-    generatePDF()
-  }, 2000) // Increase delay if needed
+  // setTimeout(() => {
+  generatePDF()
+  // }, 2) // Increase delay if needed - 2000
 }

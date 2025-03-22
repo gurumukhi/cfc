@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,6 +7,7 @@
     <title>WWF - Carbon Footprint Calculator</title>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
     <script src="/gurumukhi/cfc/refs/heads/main/v2/jspdf.umd.min.js"></script>
+    <script src="./jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -17,7 +16,7 @@
     <script>
         window.onload = function () {
             const { jsPDF } = window.jspdf;
-			console.log('Loaded jspdf')
+            console.log('Loaded jspdf')
         }
     </script>
     <script src="pre_event.js" defer></script>
@@ -310,10 +309,9 @@
 
             <form id="postEventForm">
                 <div style="text-align: center; margin: 10px;"><b>General Event Information</b>
-
                 </div>
 
-                <div class="newEntry"><label for="schoolName">School Name: <i class="fa fa-info-circle"
+                <div class="newEntry"><label for="schoolName">School Name * : <i class="fa fa-info-circle"
                             style=" font-size:14px;"
                             title="Select the school & event name if its already registered, or register them now!"
                             onclick="alert('Select the school & event name if its already registered, or register them now!')">
@@ -325,7 +323,7 @@
                         placeholder="Provide New School Name Here">
                 </div>
 
-                <div class="newEntry"><label for="eventName">Event Name: <i class="fa fa-info-circle"
+                <div class="newEntry"><label for="eventName">Event Name * : <i class="fa fa-info-circle"
                             style=" font-size:14px;"
                             title="Select the school & event name if its already registered, or register them now!"
                             onclick="alert('Select the school & event name if its already registered, or register them now!')">
@@ -338,27 +336,27 @@
                 </div>
 
                 <div class="newEntry"><label for="eventDate">Event Date:</label>
-                    <input style="width: 150px;" type="date" id="eventDate" class="required" required>
+                    <input style="width: 150px;" type="date" id="eventDate" class="required">
                 </div>
 
                 <div class="newEntry"><label for="eventDuration">Event Duration (in hours):</label>
-                    <input style="width: 150px;" type="number" id="eventDuration" class="required" required>
+                    <input style="width: 150px;" type="number" id="eventDuration" class="required">
                 </div>
 
                 <div class="newEntry"><label for="participantsCount">Participants Count:</label>
-                    <input style="width: 150px;" type="number" id="participantsCount" class="required" required>
+                    <input style="width: 150px;" type="number" id="participantsCount" class="required">
                 </div>
 
                 <div class="newEntry"><label for="contactPersonName">Contact Person Name:</label>
-                    <input style="width: 150px;" type="text" id="contactPersonName" class="required" required>
+                    <input style="width: 150px;" type="text" id="contactPersonName" class="required">
                 </div>
 
                 <div class="newEntry"><label for="contactPersonMobile">Contact Person Mobile:</label>
-                    <input style="width: 150px;" type="text" id="contactPersonMobile" class="required" required>
+                    <input style="width: 150px;" type="text" id="contactPersonMobile" class="required">
                 </div>
 
                 <div class="newEntry"><label for="contactPersonEmail">Contact Person Email:</label>
-                    <input style="width: 150px;" type="email" id="contactPersonEmail" class="required" required>
+                    <input style="width: 150px;" type="email" id="contactPersonEmail" class="required">
                 </div>
 
                 <hr style="color:silver; margin: 30px 0px 30px 0px;" />
