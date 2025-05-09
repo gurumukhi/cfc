@@ -165,6 +165,10 @@ async function submitEventDetail () {
       document.getElementById('transportPetrolUsage').value
     ) // =transportPetrolUsage&
     formData.append(
+      'entry.1309262928',
+      document.getElementById('transportCngUsage').value
+    ) // =transportCngUsage&
+    formData.append(
       'entry.1313536288',
       '0'
       //document.getElementById('transportEVUsage').value
@@ -196,6 +200,10 @@ async function submitEventDetail () {
     formData.append(
       'entry.382187960',
       document.getElementById('wasteLandfillKilogram').value
+    ) // =wasteLandfillKilogram
+    formData.append(
+      'entry.398867354',
+      document.getElementById('otherEfforts').value
     ) // =wasteLandfillKilogram
 
     console.log(formData)

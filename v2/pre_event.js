@@ -142,6 +142,7 @@ function SubmitEventDetail () {
         .value,
       transportPetrolUsage: document.getElementById('transportPetrolUsage')
         .value,
+      transportCngUsage: document.getElementById('transportCngUsage').value,
       transportEVUsage: 0, // document.getElementById('transportEvUsage').value,
       participantsUsingPublicTransport: document.getElementById(
         'participantsUsingPublicTransport'
@@ -162,9 +163,19 @@ function SubmitEventDetail () {
         'wasteCompostingPossibility'
       ).value,
       wasteLandfillKilogram: document.getElementById('wasteLandfillKilogram')
-        .value
+        .value,
+      otherEfforts: document.getElementById('otherEfforts').value
     }
     const eventStage = 'Pre-Event'
+
+    // entry.1309262928=answer_cng
+    // entry.186202612=answer_extra1
+    // entry.1388415716=answer_extra2
+    // entry.1630196499=answer_extra3
+    // entry.88126867=answer_extra4
+    // entry.1381615592=answer_entra5
+    // entry.398867354=answer_anything_else
+
     var formBaseUrl =
       'https://docs.google.com/forms/d/e/1FAIpQLSfWOWlZ9IIrP1wfZ9XgzbF2cbdkQdbHqWBzvUHEEOlViA2k2w/formResponse?&submit=Submit?usp=pp_url'
     var formUrlQueryParam = `&entry.493368372=${formData.schoolName}&entry.87921043=${formData.eventName}&entry.646415086=${formData.contactPersonName}
@@ -172,10 +183,11 @@ function SubmitEventDetail () {
         &entry.1221970040=${formData.eventDuration}&entry.1047405020=${formData.participantsCount}&entry.605181714=${formData.electricityTypeUsage}
         &entry.947010150=${formData.electricityUnitsUsage}&entry.1100991259=${formData.generatorTypeUsage}&entry.1046566004=${formData.generatorLitersUsage}
         &entry.1289781962=${formData.transportDieselUsage}&entry.73047054=${formData.transportPetrolUsage}&entry.1313536288=${formData.transportEVUsage}
+        &entry.1309262928=${formData.transportCngUsage}
         &entry.413821880=${formData.participantsUsingPublicTransport}&entry.79051389=${formData.participantsUsingCarpool}
         &entry.814786714=${formData.participantsUsingPrivateVehicle}&entry.1177172054=${formData.participantsUsingCyleWalk}
         &entry.600183046=${formData.wasteSegregationPossibility}&entry.1578498963=${formData.wasteCompostingPossibility}&entry.382187960=${formData.wasteLandfillKilogram}
-        &entry.2108547846=${eventStage}`
+        &entry.2108547846=${eventStage}&entry.398867354=${formData.otherEfforts}`
     var finalFormURL = `${formBaseUrl}${formUrlQueryParam}`
     submitDataToGoogleForms(finalFormURL)
     alert('Data submitted successfully. Generating the report now.')
@@ -200,6 +212,7 @@ function submitDataToGoogleForms (formUrl) {
 const emissionFactors = {
   petrol: 2.27193, // kg CO₂ per liter
   diesel: 2.6444, // kg CO₂ per liter
+  cng: 2.692,
   electricity: 653, // kg CO₂ per MWh
   landfillWaste: 7.455 // kg CO₂e per kg waste
 }
@@ -209,6 +222,7 @@ function generatePDF () {
   const emissionFactors = {
     petrol: 2.27193, // kg CO₂ per liter
     diesel: 2.6444, // kg CO₂ per liter
+    cng: 2.692,
     electricity: 0.653, // kg CO₂ per kWh
     landfillWaste: 7.455 // kg CO₂e per kg waste
   }
@@ -225,13 +239,21 @@ function generatePDF () {
       ? Number(document.getElementById('generatorLitersUsage').value)
       : 0)
 
+  let cngTotal =
+    Number(document.getElementById('transportCngUsage').value) +
+    (document.getElementById('generatorTypeUsage').value === 'cng'
+      ? Number(document.getElementById('generatorLitersUsage').value)
+      : 0)
+
   console.log(petrolTotal)
   console.log(dieselTotal)
+  console.log(cngTotal)
 
   // Get Input Values from Form
   const emissions = {
     petrol: Number(petrolTotal) * emissionFactors.petrol,
     diesel: Number(dieselTotal) * emissionFactors.diesel,
+    cng: Number(cngTotal) * emissionFactors.cng,
     electricity:
       Number(document.getElementById('electricityUnitsUsage').value) *
       emissionFactors.electricity,
@@ -255,6 +277,12 @@ function generatePDF () {
             <td>${emissions.diesel.toFixed(2)} kg CO₂</td>
         </tr>
         <tr>
+            <td>CNG</td>
+            <td>${cngTotal} L</td>
+            <td>2.69 kg CO₂/kg</td>
+            <td>${emissions.cng.toFixed(2)} kg CO₂</td>
+        </tr>
+        <tr>
             <td>Electricity</td>
             <td>${Number(
               document.getElementById('electricityUnitsUsage').value
@@ -276,6 +304,7 @@ function generatePDF () {
   const totalEmissions =
     emissions.petrol +
     emissions.diesel +
+    emissions.cng +
     emissions.electricity +
     emissions.landfillWaste
   document.getElementById(

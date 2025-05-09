@@ -302,9 +302,11 @@
                 <br /><br />
                 <i class="fa fa-print" style="padding:10px; font-size:14px; cursor:pointer;" title="Print this form"
                     onclick="window.print()">&nbsp Print this form</i>
-                <i class="fa fa-question-circle" style="padding:10px; font-size:14px; cursor:pointer" title="Help"
-                    onclick="alert('For planning a Carbon Conscious event at your School, you can provide the estimated data for the event here to see get an idea of carbon footprint based on it and how to reduce it. You can choose to skip the input boxes for which the data estimation is not available with you.')">&nbsp
-                    Help</i>
+                <a target="_blank"
+                    href="https://docs.google.com/document/d/1_Hd4zdJNNUTesNr1c3HZ7We_QWnM_3sV8R8l8RISPfY/edit?usp=sharing"><i
+                        class="fa fa-question-circle" style="padding:10px; font-size:14px; cursor:pointer"
+                        title="Help">&nbsp
+                        Download User Guide</i></a>
             </p>
 
             <form id="postEventForm">
@@ -378,6 +380,7 @@
                     <select style="width: 200px; height: 34px;" id="generatorTypeUsage">
                         <option value="diesel">Diesel</option>
                         <option value="petrol">Petrol</option>
+                        <option value="cng">CNG</option>
                         <option value="na">Not Applicable</option>
                     </select>
                 </div>
@@ -402,28 +405,33 @@
                     <input type="number" id="transportPetrolUsage">
                 </div>
 
+                <div class="newEntry"><label for="transportCngUsage">CNG Usage (For Transport) Estimation
+                        (Kg):</label>
+                    <input type="number" id="transportCngUsage">
+                </div>
+
                 <!-- <div class="newEntry"><label for="transportEVUsage">Transport EV Used (kWh):</label>
                     <input type="number" id="transportEVUsage">
                 </div> -->
 
-                <div class="newEntry"><label for="participantsUsingPublicTransport">Estimate Participant Count
+                <div class="newEntry"><label for="participantsUsingPublicTransport">Number Of Participant Expected
                         To Use Public
                         Transport:</label>
                     <input type="number" style="width: 300px;" id="participantsUsingPublicTransport">
                 </div>
 
-                <div class="newEntry"><label for="participantsUsingCarpool">Estimate Participant Count To Use
+                <div class="newEntry"><label for="participantsUsingCarpool">Number Of Participant Expected To Use
                         Carpooling:</label>
                     <input type="number" style="width: 300px;" id="participantsUsingCarpool">
                 </div>
 
-                <div class="newEntry"><label for="participantsUsingPrivateVehicle">Estimate Participant Count To
+                <div class="newEntry"><label for="participantsUsingPrivateVehicle">Number Of Participant Expected To
                         Use Private
                         Vehicles:</label>
                     <input type="number" style="width: 300px;" id="participantsUsingPrivateVehicle">
                 </div>
 
-                <div class="newEntry"><label for="participantsUsingCycleWalk">Estimate Participant Count To Use
+                <div class="newEntry"><label for="participantsUsingCycleWalk">Number Of Participant Expected To Use
                         Bicycle/Walking:</label>
                     <input type="number" style="width: 300px;" id="participantsUsingCycleWalk">
                 </div>
@@ -450,6 +458,15 @@
                         (Kg):</label>
                     <input type="number" id="wasteLandfillKilogram">
                 </div>
+                <div style="text-align: center; margin: 30px 0px 10px;"><b>Other Effots</b></div>
+
+                <div class="newEntry"><label for="otherEfforts">Any other steps you are planning to take to make
+                        it a carbon conscious event:
+                    </label>
+                    <textarea id="otherEfforts" rows=3></textarea>
+                </div>
+
+
                 <div style="text-align: center; margin-top: 30px;">
                     <!-- <button style="margin-bottom: 10px;" type="submit">Submit and Create Report</button> -->
                     <button type="button" style="margin-bottom: 10px;"
@@ -564,6 +581,8 @@
                         .value,
                     transportPetrolUsage: document.getElementById('transportPetrolUsage')
                         .value,
+                    transportCngUsage: document.getElementById('transportCngUsage')
+                        .value,
                     transportEVUsage: 0, // document.getElementById('transportEvUsage').value,
                     participantsUsingPublicTransport: document.getElementById(
                         'participantsUsingPublicTransport'
@@ -590,6 +609,7 @@
                 const emissionFactors = {
                     petrol: 2.27193, // kg CO₂ per liter
                     diesel: 2.6444, // kg CO₂ per liter
+                    cng: 2.692, // kg CO2 per Kg
                     electricity: 0.653, // kg CO₂ per kWh
                     landfillWaste: 7.455 // kg CO₂e per kg waste
                 }
@@ -606,9 +626,16 @@
                         ? Number(document.getElementById('generatorLitersUsage').value)
                         : 0)
 
+                let cngTotal =
+                    Number(document.getElementById('transportCngUsage').value) +
+                    (document.getElementById('generatorTypeUsage').value === 'cng'
+                        ? Number(document.getElementById('generatorLitersUsage').value)
+                        : 0)
+
                 const emissions = {
                     petrol: Number(petrolTotal) * emissionFactors.petrol,
                     diesel: Number(dieselTotal) * emissionFactors.diesel,
+                    cng: Number(cngTotal) * emissionFactors.cng,
                     electricity:
                         Number(document.getElementById('electricityUnitsUsage').value) *
                         emissionFactors.electricity,
@@ -620,6 +647,7 @@
                 const totalEmissions =
                     emissions.petrol +
                     emissions.diesel +
+                    emissions.cng +
                     emissions.electricity +
                     emissions.landfillWaste
 
@@ -650,6 +678,7 @@
         Estimated Fuel Consumption:
         * Diesel: ${formData.transportDieselUsage} Litres
         * Petrol: ${formData.transportPetrolUsage} Litres
+        * CNG: ${formData.transportCngUsage} Kg
         Transport Modes Used by Participants:
         * Public Transport: ${formData.participantsUsingPublicTransport}
         * Carpooling: ${formData.participantsUsingCarpool}
@@ -666,6 +695,7 @@
         6. Carbon Footprint Estimation
         * Petrol Consumption Emissions: ${emissions.petrol}
         * Diesel Consumption Emissions: ${emissions.diesel}
+        * CNG Consumption Emissions: ${emissions.cng}
         * Electricity-related Emissions: ${emissions.electricity}
         * Waste-related Emissions: ${emissions.landfillWaste}
         * Total Estimated Carbon Footprint: ${totalEmissions}
